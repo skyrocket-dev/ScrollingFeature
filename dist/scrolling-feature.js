@@ -1,10 +1,15 @@
 const height = window.innerHeight;
 const width = window.innerWidth;
 const videos = document.querySelectorAll("[data-videoid]");
+const scrollSect = document.querySelector('[scrolling-element="container"]')
 let ytVideos = [];
 let lastKnownScrollPosition = 0;
 let ticking = false;
 let currentVideo = 0;
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+
+const autoIndex = Number(urlParams.get('vid'));
 
 function initializeYTVideos() {
   function onYouTubeIframeAPIReady() {
@@ -15,6 +20,15 @@ function initializeYTVideos() {
       });
       ytVideos.push(player);
     });
+
+    if(autoIndex && autoIndex > 0  && typeof autoIndex === "number"){
+      if (width <= 767) {
+        let scrollAmmount = (autoIndex * height) + 1
+        for(let i = 0; i < autoIndex; i++ ){
+        	scrollSect.scrollBy(0, height);
+        }
+      }
+    }
   }
 
   if (typeof YT !== 'undefined' && YT.loaded === 1) {
@@ -28,8 +42,8 @@ const TriggerPlayPause = (scrollPos) => {
   const newVideoIndex = Math.floor(scrollPos / height);
 
   if (currentVideo !== newVideoIndex) {
-    ytVideos[currentVideo].stopVideo();
-    ytVideos[newVideoIndex].playVideo();
+  	if(currentVideo) ytVideos[currentVideo].stopVideo();
+    if(typeof ytVideos[newVideoIndex].playVideo === 'function') ytVideos[newVideoIndex].playVideo();
     currentVideo = newVideoIndex;
   }
 }
@@ -37,7 +51,6 @@ const TriggerPlayPause = (scrollPos) => {
 
 const InitializeScrollListener = () => {
   if (width <= 767) {
-    const scrollSect = document.querySelector('[scrolling-element="container"]')
     let scrollAutoTrigger = scrollSect.getAttribute("scrolling-auto") 
 
     if(scrollAutoTrigger) {
