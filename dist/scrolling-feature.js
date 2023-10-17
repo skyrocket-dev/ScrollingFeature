@@ -34,22 +34,27 @@ const TriggerPlayPause = (scrollPos) => {
   }
 }
 
+
 const InitializeScrollListener = () => {
   if (width <= 767) {
-    const scrollSect = document.querySelector(".scrollin-section__wrapper.w-dyn-items")
+    const scrollSect = document.querySelector('[scrolling-element="container"]')
+    let scrollAutoTrigger = scrollSect.getAttribute("scrolling-auto") 
 
-    scrollSect.addEventListener("scroll", (e) => {
-      lastKnownScrollPosition = scrollSect.scrollTop;
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          TriggerPlayPause(lastKnownScrollPosition);
-          ticking = false;
-        });
-        ticking = true;
-      }
-    });
+    if(scrollAutoTrigger) {
+      scrollSect.addEventListener("scroll", (e) => {
+        lastKnownScrollPosition = scrollSect.scrollTop;
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            TriggerPlayPause(lastKnownScrollPosition);
+            ticking = false;
+          });
+          ticking = true;
+        }
+      });
+    }
   }
 }
+
 
 const loadYouTubeAPI = () =>  {
   const tag = document.createElement('script');
