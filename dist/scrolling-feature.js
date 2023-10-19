@@ -66,6 +66,11 @@ const InitializeScrollListener = () => {
       });
     }
   }
+  else {
+    if(autoIndex && typeof autoIndex === "number"){
+      $('.scrollin-section__wrapper').slickGoTo(autoIndex);
+    }
+  }
 }
 
 
